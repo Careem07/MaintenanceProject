@@ -232,6 +232,7 @@ public class Notepad implements ActionListener, MenuConstants {
 
 	JFrame f;
 	JTextArea ta;
+	JTextArea tb;
 	JLabel statusBar;
 
 	private String fileName = "Untitled";
@@ -254,7 +255,7 @@ public class Notepad implements ActionListener, MenuConstants {
 	Notepad() {
 		f = new JFrame(fileName + " - " + applicationName);
 		ta = new JTextArea(30, 60);
-		statusBar = new JLabel("||       Ln 1, Col 1  ", JLabel.RIGHT);
+		statusBar = new JLabel("Wordcount: 0    ||       Ln 1, Col 1  ", JLabel.RIGHT);
 		f.add(new JScrollPane(ta), BorderLayout.CENTER);
 		f.add(statusBar, BorderLayout.SOUTH);
 		f.add(new JLabel("  "), BorderLayout.EAST);
@@ -273,21 +274,31 @@ public class Notepad implements ActionListener, MenuConstants {
 
 		ta.addCaretListener(new CaretListener() {
 			public void caretUpdate(CaretEvent e) {
-				int lineNumber = 0, column = 0, pos = 0;
-
+				int lineNumber = 0, column = 0, pos = 0, wordcount = 0;
 				try {
 					pos = ta.getCaretPosition();
 					lineNumber = ta.getLineOfOffset(pos);
 					column = pos - ta.getLineStartOffset(lineNumber);
+
+					if (ta.getText().length() != 0)
+
+					{
+						String text = ta.getText();
+						wordcount = text.split("\\s+").length; 
+					} else {
+						wordcount = 0;
+					}
 				} catch (Exception excp) {
 				}
 				if (ta.getText().length() == 0) {
 					lineNumber = 0;
 					column = 0;
 				}
-				statusBar.setText("||       Ln " + (lineNumber + 1) + ", Col " + (column + 1));
+				statusBar.setText(
+						"Wordcount : " + wordcount + "   ||       Ln " + (lineNumber + 1) + ", Col " + (column + 1));
 			}
 		});
+
 //////////////////
 		DocumentListener myListener = new DocumentListener() {
 			public void changedUpdate(DocumentEvent e) {
@@ -618,7 +629,6 @@ interface MenuConstants {
 	final String formatText = "Format";
 	final String viewText = "View";
 	final String helpText = "Help";
-	//feature ad
 
 	final String fileNew = "New";
 	final String fileOpen = "Open...";
